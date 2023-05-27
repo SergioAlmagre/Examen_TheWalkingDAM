@@ -12,9 +12,10 @@ class Juego {
     var allZombies:ArrayList<Zombie> = ArrayList()
     var allPersonaje:ArrayList<Personaje> = ArrayList()
     var shophie:Personaje? = null
-    var nombreEstrella = "Shophie"
+    var nombreEstrella = "Sophie"
     var zombiesVivos:Int = 0
     var pausado:Boolean = false
+    var encontrada:Boolean = false
 
     init {
         unirTodosLosZombies()
@@ -148,6 +149,11 @@ class Juego {
                                     mapa.setPosicion(f,c,null)
                                     objetoA.municion--
                                     cad = cad + "Zombie muerto!! \n"
+                                }else if(objetoB is Personaje){
+                                    if (objetoB.nombre == nombreEstrella){
+                                        cad = "Has encontrado a $nombreEstrella"
+                                        encontrada = true
+                                    }
                                 }
                             }
                         }

@@ -71,28 +71,35 @@ class Principal:Initializable {
             }
             temporizador = javax.swing.Timer(1000, object : ActionListener {
                 override fun actionPerformed(e: java.awt.event.ActionEvent?) {
+
                     progressBar.progress = contador.toDouble() / 60
                     Platform.runLater{
                         if (tiempo % 1 == 0) {
-                            var num = Random.nextInt(2,3)
-                            for (i in 0..num){
-                                partida.colocarObjeto(partida.popZombie()!!)
-                        }
-                                infoPartidaField.text = partida.mover()
+                            if (partida.encontrada == false) {
+
+                                var num = Random.nextInt(2,3)
+                                for (i in 0..num){
+                                    partida.colocarObjeto(partida.popZombie()!!)
+                                }
+                                    infoPartidaField.text = partida.mover()
+                                    tablaJuego.items.clear()
+                                    for (i in 0..  partida.mapa.filas()-1){
+                                        val fila = Fila(partida.mapa.getPosicion(i,0)?.toString() ?: "",
+                                                        partida.mapa.getPosicion(i,1)?.toString() ?: "",
+                                                        partida.mapa.getPosicion(i,2)?.toString() ?: "",
+                                                        partida.mapa.getPosicion(i,3)?.toString() ?: "")
+                                        tablaJuego.items.add(fila)
+                                    }
+                            }else{
                                 tablaJuego.items.clear()
                                 for (i in 0..  partida.mapa.filas()-1){
-                                    val fila = Fila(partida.mapa.getPosicion(i,0)?.toString() ?: "",
-                                                    partida.mapa.getPosicion(i,1)?.toString() ?: "",
-                                                    partida.mapa.getPosicion(i,2)?.toString() ?: "",
-                                                    partida.mapa.getPosicion(i,3)?.toString() ?: "")
+                                    val fila = Fila("!","!","!","!")
                                     tablaJuego.items.add(fila)
+                                    temporizador.stop()
                                 }
-//                            }
+                            }
                         }
                     }
-
-
-
 
                     tiempo++
                     contador--
