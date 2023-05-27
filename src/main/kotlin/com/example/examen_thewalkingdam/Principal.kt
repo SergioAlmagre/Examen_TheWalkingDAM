@@ -27,7 +27,7 @@ import kotlin.random.Random
 class Principal:Initializable {
 
     var tiempo = 1
-    var contador = 60
+    var contador = 300
     var partida = Juego()
     var historial = ""
     val posicionClick = Array<Int>(2){0}
@@ -110,7 +110,7 @@ class Principal:Initializable {
                             for (i in 0..  partida.mapa.filas()-1){
                                 val fila = Fila("!","!","!","!")
                                 tablaJuego.items.add(fila)
-                                temporizador.stop()
+//                                temporizador.stop()
                             }
                         }
                     }
@@ -121,9 +121,17 @@ class Principal:Initializable {
                                 e.vida - 10
                                 if (e.vida <= 0){
                                     partida.convertirPersonajeAZombie(e.id)
+                                    infoPartidaField.text = "Personaje ${e.nombre} convertido en zombie\n"
+                                    historial = historial + fechaYHora + infoPartidaField.text
                                 }
                             }
                         }
+                    }
+                    if (tiempo % 300 == 0){
+                        infoPartidaField.text = "Fin de partida por tiempo agotado\n"
+                        historial = historial + fechaYHora + infoPartidaField.text
+                        tablaJuego.items.clear()
+//                        temporizador.stop()
                     }
 
                     tiempo++
@@ -187,6 +195,28 @@ class Principal:Initializable {
 
     @FXML
     fun reiniciarButton(event: ActionEvent) {
+//        temporizador.stop()
+    var mensaje = "Reiniciando partida"
+        infoPartidaField.text = mensaje
+        for (i in 0..10){
+            infoPartidaField.text = infoPartidaField.text + "."
+            Thread.sleep(100)
+        }
+        historial = historial + infoPartidaField.text + "\n"
+
+
+        tablaJuego.items.clear()
+        partida.personajesElegidos.clear()
+        partida.allPersonaje.clear()
+        partida.allZombies.clear()
+        partida.zombiesVivos = 0
+        partida.encontrada = false
+        contador = 300
+        tiempo = 1
+        progressBar.progress = contador.toDouble()
+        partida.mensajesJuego = ""
+        infoPartidaField.text = ""
+        historial = ""
 
     }
 
