@@ -37,7 +37,7 @@ object Conexion {
             // Realizamos la conexión a una BD con un usuario y una clave.
             conexion = DriverManager.getConnection(URL_BD, Constantes.usuario, Constantes.passwd)
             sentenciaSQL = conexion!!.createStatement()
-            println("Conexion realizada con éxito")
+//            println("Conexion realizada con éxito")
         } catch (e: Exception) {
             Datos.gestionErrores(e,"Fallo en abrir conexión")
         }
@@ -50,7 +50,7 @@ object Conexion {
             conexion!!.close()
 
         } catch (e: Exception) {
-            Datos.gestionErrores(e,"Fallo en cerrar conexión")
+//            Datos.gestionErrores(e,"Fallo en cerrar conexión")
         }
         return cod
     }

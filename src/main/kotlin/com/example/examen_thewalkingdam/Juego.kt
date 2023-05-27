@@ -11,7 +11,7 @@ class Juego {
     var mapa: Mapa = Mapa()
     var allZombies:ArrayList<Zombie> = ArrayList()
     var allPersonaje:ArrayList<Personaje> = Conexion.obtenerPersonajes()
-    var shophie:Personaje? = null
+    var sophie:Personaje? = null
     var nombreEstrella = "Sophie"
     var zombiesVivos:Int = 0
     var pausado:Boolean = false
@@ -21,11 +21,11 @@ class Juego {
 
     init {
         unirTodosLosZombies()
-        shophie = Conexion.obtenerSophia()
+        sophie = Conexion.obtenerSophia()
     }
 
     override fun toString(): String {
-        return "Juego(mapa=$mapa, allZombies=$allZombies, allPersonaje=$allPersonaje, shophie=$shophie, zombiesVivos=$zombiesVivos, pausado=$pausado)"
+        return "Juego(mapa=$mapa, allZombies=$allZombies, allPersonaje=$allPersonaje, shophie=$sophie, zombiesVivos=$zombiesVivos, pausado=$pausado)"
     }
 
     fun unirTodosLosZombies():ArrayList<Zombie>{
@@ -45,7 +45,7 @@ class Juego {
                 extraido = true
                 allZombies!!.removeFirst()
             } else {
-                println("cola vacia")
+//                println("cola vacia")
                 allZombies = unirTodosLosZombies()
             }
         }while (!extraido)
@@ -56,7 +56,6 @@ class Juego {
         var p: Personaje? = null
         var extraido:Boolean = false
         var max = Conexion.totalPersonajes() -1
-        println(max)
         try {
             do {
                 var num = Random.nextInt(0, max)
@@ -144,6 +143,7 @@ class Juego {
                                     if (objetoA.municion > 0){
                                         mapa.setPosicion(nFil,nCol,objetoA)
                                         mapa.setPosicion(f,c,null)
+                                        zombiesVivos--
                                         objetoA.municion--
                                         mensajesJuego =  "$objetoB muerto!!  \n"
                                     }else{
@@ -161,7 +161,6 @@ class Juego {
                 }
             }
         }catch (e:Exception){
-            e.printStackTrace()
             Datos.gestionErrores(e,"mover")
         }
     }

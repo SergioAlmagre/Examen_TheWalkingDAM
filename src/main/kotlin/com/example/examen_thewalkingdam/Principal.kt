@@ -27,7 +27,7 @@ import kotlin.random.Random
 class Principal:Initializable {
 
     var tiempo = 1
-    var contador = 300
+    var contador = 120
     var partida = Juego()
     var historial = ""
     val posicionClick = Array<Int>(2){0}
@@ -63,26 +63,12 @@ class Principal:Initializable {
 
     override fun initialize(p0: URL?, p1: ResourceBundle?) {
         try {
-            c1.cellValueFactory = PropertyValueFactory("c1")
-            c2.cellValueFactory = PropertyValueFactory("c2")
-            c3.cellValueFactory = PropertyValueFactory("c3")
-            c4.cellValueFactory = PropertyValueFactory("c4")
 
-            var tipoCopia = arrayOf("De texto", "Base de datos")
-            comboTipoCopia.promptText = "Seleccione tipo"
-            comboTipoCopia.items.addAll(*tipoCopia)
-// COLOCAR A LA PERSONAJE ESTRELLA
-            partida.colocarObjeto(partida.shophie!!)
-//  AÑADIR A 3 PERSONAJES VALIENTES
-            for (i in 0..2){
-                val p:Personaje? = partida.objenerPersonaje()
-                partida.colocarObjeto(p!!)
-                partida.personajesElegidos.add(p)
-            }
+            inicializarPartida()
 
             temporizador = javax.swing.Timer(1000, object : ActionListener {
                 override fun actionPerformed(e: java.awt.event.ActionEvent?) {
-                    var fechaYHora = LocalDate.now().toString() + " - "+LocalTime.now().toString().substring(0,8) + " - "
+
                     progressBar.progress = contador.toDouble() / 60
                     Platform.runLater{
                         if (partida.encontrada == false) {
@@ -94,7 +80,7 @@ class Principal:Initializable {
 //  MOSTRAR ACTUALIZACIONES Y GUARDAR EL HISTORIAL DE EVENTOS EN EL JUEGO
                                 partida.mover()
                                 infoPartidaField.text = partida.mensajesJuego
-                                historial = historial + fechaYHora + infoPartidaField.text + "\n"
+                                addInforme(infoPartidaField.text)
 //  BORRAR TABLA, AÑADIR A LA CLASE FILA EL CONTENIDO DE NUESTRA MATRIZ FILA POR FILA
                                 tablaJuego.items.clear()
                                 for (i in 0..  partida.mapa.filas()-1){
@@ -122,14 +108,14 @@ class Principal:Initializable {
                                 if (e.vida <= 0){
                                     partida.convertirPersonajeAZombie(e.id)
                                     infoPartidaField.text = "Personaje ${e.nombre} convertido en zombie\n"
-                                    historial = historial + fechaYHora + infoPartidaField.text
+                                    addInforme(infoPartidaField.text)
                                 }
                             }
                         }
                     }
                     if (tiempo % 300 == 0){
                         infoPartidaField.text = "Fin de partida por tiempo agotado\n"
-                        historial = historial + fechaYHora + infoPartidaField.text
+                        addInforme(infoPartidaField.text)
                         tablaJuego.items.clear()
                         temporizador.stop()
                     }
@@ -145,6 +131,28 @@ class Principal:Initializable {
         }
         tablaJuego.selectionModel.cellSelectionEnabledProperty().set(true)
         tablaJuego.selectionModel.selectionMode = SelectionMode.SINGLE
+    }
+    fun inicializarPartida(){
+        c1.cellValueFactory = PropertyValueFactory("c1")
+        c2.cellValueFactory = PropertyValueFactory("c2")
+        c3.cellValueFactory = PropertyValueFactory("c3")
+        c4.cellValueFactory = PropertyValueFactory("c4")
+
+        var tipoCopia = arrayOf("De texto", "Base de datos")
+        comboTipoCopia.promptText = "Seleccione tipo"
+        comboTipoCopia.items.addAll(*tipoCopia)
+// COLOCAR A LA PERSONAJE ESTRELLA
+        partida.colocarObjeto(partida.sophie!!)
+        infoPartidaField.text = "Sophie ha sido escondida"
+        addInforme(infoPartidaField.text)
+//  AÑADIR A 3 PERSONAJES VALIENTES
+        for (i in 0..2){
+            val p:Personaje? = partida.objenerPersonaje()
+            partida.colocarObjeto(p!!)
+            infoPartidaField.text = "Personaje ${p.nombre} elegido para la lucha!"
+            addInforme(infoPartidaField.text)
+            partida.personajesElegidos.add(p)
+        }
     }
 
     @FXML
@@ -173,6 +181,11 @@ class Principal:Initializable {
 
     @FXML
     fun verInfoButton(event: ActionEvent) {
+        if (Datos.tipo == 0){
+            infoPartidaField.text = "Mostrando información sobre ${Datos.zom.toString()}"
+            addInforme(infoPartidaField.text)
+        }
+
         var objeto:Any? = partida.mapa.getPosicion(posicionClick[0],posicionClick[1])
         if (objeto is Zombie){
             Datos.zom = objeto
@@ -195,6 +208,8 @@ class Principal:Initializable {
 
     @FXML
     fun pausarButton(event: ActionEvent) {
+        infoPartidaField.text = "Partida pausada"
+        addInforme(infoPartidaField.text)
         temporizador.stop()
     }
 
@@ -202,32 +217,30 @@ class Principal:Initializable {
     fun reiniciarButton(event: ActionEvent) {
 
     var mensaje = "Reiniciando partida"
-        infoPartidaField.text = mensaje
-        for (i in 0..10){
-            infoPartidaField.text = infoPartidaField.text + "."
-            Thread.sleep(100)
+        try {
+            infoPartidaField.text = mensaje
+            for (i in 0..10){
+                infoPartidaField.text = infoPartidaField.text + "."
+                Thread.sleep(100)
+            }
+
+            addInforme(infoPartidaField.text)
+            tablaJuego.items.clear()
+            partida = Juego()
+            contador = 120
+            tiempo = 1
+            progressBar.progress = contador.toDouble()
+            temporizador.start()
+            inicializarPartida()
+        }catch (e:Exception){
+            Datos.gestionErrores(e,"reiniciarPartida")
         }
-        historial = historial + infoPartidaField.text + "\n"
-
-
-        tablaJuego.items.clear()
-        partida.personajesElegidos.clear()
-        partida.allPersonaje.clear()
-        partida.allZombies.clear()
-        partida.zombiesVivos = 0
-        partida.encontrada = false
-        contador = 300
-        tiempo = 1
-        progressBar.progress = contador.toDouble()
-        partida.mensajesJuego = ""
-        infoPartidaField.text = ""
-        historial = ""
-        temporizador.start()
-
     }
 
     @FXML
     fun continuarButton(event: ActionEvent) {
+        infoPartidaField.text = "Reanudando partida"
+        addInforme(infoPartidaField.text)
         temporizador.start()
     }
 
@@ -250,14 +263,19 @@ class Principal:Initializable {
                 println(Arrays.toString(posicionClick))
             }
 
-
-
-
 //    mensaje        mostrarInformacion("Información seleccionada", "Información de la fila seleccionada: $posSeleccionada", p.toString())
         } else {
 //      mensaje      mostrarError("Error","Seleccione una fila","Compruebe que tiene datos en la tabla y que hay una fila seleccionada")
         }
     }
+
+    fun addInforme(mensaje:String){
+        val fechaYHora = LocalDate.now().toString() + " - "+LocalTime.now().toString().substring(0,8) + " - "
+        val guion = " - "
+        val salto = "\n"
+        historial = historial + fechaYHora + guion + mensaje + salto
+    }
+
 
 
 }
