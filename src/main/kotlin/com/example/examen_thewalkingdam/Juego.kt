@@ -10,7 +10,7 @@ import kotlin.random.Random
 class Juego {
     var mapa:Mapa = Mapa()
     var allZombies:ArrayList<Zombie> = ArrayList()
-    var allPersonaje:ArrayList<Personaje> = ArrayList()
+    var allPersonaje:ArrayList<Personaje> = Conexion.obtenerPersonajes()
     var shophie:Personaje? = null
     var nombreEstrella = "Sophie"
     var zombiesVivos:Int = 0
