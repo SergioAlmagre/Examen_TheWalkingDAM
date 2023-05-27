@@ -1,6 +1,7 @@
 package Utilidades
 
 import BBDD.Conexion
+import Personaje.Personaje
 import Zombies.Zombie
 import java.io.File
 import java.io.FileWriter
@@ -10,9 +11,16 @@ import java.time.LocalTime
 import java.util.Date
 
 object Datos {
+    /**
+     * Tipo
+     * 0 - zombie
+     * 1 - personaje
+     */
 
     var zombiesJugando = 0
-    var zom:Zombie? = null
+    var zom: Zombie? = null
+    var per: Personaje? = null
+    var tipo: Int = 0
 
 
     fun gestionErrores(ex:Exception, info:String){

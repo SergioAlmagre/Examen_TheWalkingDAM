@@ -1,6 +1,11 @@
 package com.example.examen_thewalkingdam
+import Utilidades.Datos
+import Zombies.ZombieNormal
+import Zombies.ZombiePodrido
+import Zombies.ZombiePupas
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
+import javafx.fxml.Initializable
 import javafx.scene.Node
 import javafx.scene.control.CheckBox
 import javafx.scene.control.RadioButton
@@ -8,8 +13,10 @@ import javafx.scene.control.TextField
 import javafx.scene.control.ToggleGroup
 import javafx.scene.layout.AnchorPane
 import javafx.stage.Stage
+import java.net.URL
+import java.util.*
 
-class DetalleController {
+class DetalleController:Initializable {
 
     @FXML
     private lateinit var capInfecField: TextField
@@ -44,6 +51,34 @@ class DetalleController {
     @FXML
     private lateinit var velocidadField: TextField
 
+    override fun initialize(p0: URL?, p1: ResourceBundle?) {
+        if(Datos.tipo == 0){
+            noRadio.isSelected = true
+            velocidadField.text = Datos.zom!!.velocidad.toString()
+            capInfecField.text = Datos.zom!!.capacidad.toString()
+            tiempoInfecField.text = Datos.zom!!.tiempo.toString()
+            if (Datos.zom is ZombiePodrido){
+                if ((Datos.zom as ZombiePodrido).sePuedeMover == 1){
+                    checkSePuedenMover.isSelected = true
+                }else{
+                    checkSePuedenMover.isSelected = false
+                }
+            }else if (Datos.zom is ZombiePupas){
+                siRadio.isSelected = true
+            }else if (Datos.zom is ZombieNormal){
+               println("Es un zombie normal")
+            }
+
+        }else{
+            println("has seleccionado un personaje")
+        }
+
+
+
+
+
+    }
+
     @FXML
     fun guardarButton(event: ActionEvent) {
 
@@ -56,5 +91,7 @@ class DetalleController {
         val stage = source.scene.window as Stage
         stage.close()
     }
+
+
 
 }

@@ -118,9 +118,6 @@ class Juego {
         try {
             for (f in 0..mapa.filas()-1) {
                 for (c in 0..mapa.columnas()-1) {
-                    println("Desde mover")
-                    println(f)
-                    println(c)
 
                     objetoA = mapa.getPosicion(f, c)
 

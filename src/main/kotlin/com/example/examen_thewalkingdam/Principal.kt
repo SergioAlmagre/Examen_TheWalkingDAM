@@ -1,5 +1,6 @@
 package com.example.examen_thewalkingdam
 
+import Personaje.Personaje
 import Utilidades.Datos
 import Zombies.Zombie
 import javafx.application.Platform
@@ -29,8 +30,8 @@ class Principal:Initializable {
     var tiempo = 1
     var contador = 60
     var partida = Juego()
-
     var historial = ""
+    val posicionClick = Array<Int>(2){0}
 
 
     companion object {
@@ -143,6 +144,16 @@ class Principal:Initializable {
 
     @FXML
     fun verInfoButton(event: ActionEvent) {
+        var objeto:Any? = partida.mapa.getPosicion(posicionClick[0],posicionClick[1])
+        if (objeto is Zombie){
+            Datos.zom = objeto
+            Datos.tipo = 0
+        }
+        if (objeto is Personaje){
+            Datos.per = objeto
+            Datos.tipo = 1
+        }
+
         val fxmlLoader  = FXMLLoader(HelloApplication::class.java.getResource("Detalle-view.fxml"))
         val scene = Scene(fxmlLoader.load())
         val stage = Stage()
@@ -170,6 +181,7 @@ class Principal:Initializable {
 
     @FXML
     fun onClickTable(event: MouseEvent) {
+
         println(tablaJuego.selectionModel.selectedIndex)
         if (this.tablaJuego.selectionModel.selectedIndex != -1){
             val objeto: Fila? = this.tablaJuego.selectionModel.selectedItem
@@ -178,15 +190,12 @@ class Principal:Initializable {
             if (celdaSeleccionada != null) {
                 val filSeleccionada = celdaSeleccionada.row
                 val colSeleccionada = celdaSeleccionada.column
+                posicionClick[0] = filSeleccionada
+                posicionClick[1] = colSeleccionada
                 val celda = this.tablaJuego.getVisibleLeafColumn(colSeleccionada).getCellObservableValue(filSeleccionada).value
                 val valorCelda = celda?.toString()
                 println("Valor de la celda seleccionada: $valorCelda")
-                if (celda is Zombie){
-                    println(celda.id)
-                    println(celda.capacidad)
-                    println(celda.tiempo)
-                    println(celda.velocidad)
-                }
+                println(Arrays.toString(posicionClick))
             }
 
 
