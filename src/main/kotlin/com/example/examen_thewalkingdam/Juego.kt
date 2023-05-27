@@ -144,7 +144,8 @@ class Juego {
                             } else {
                                 println("funcion de pelear")
                                 if (objetoB is Zombie){
-                                    mapa.setPosicion(nFil,nCol,null)
+                                    mapa.setPosicion(nFil,nCol,objetoA)
+                                    mapa.setPosicion(f,c,null)
                                     objetoA.municion--
                                     cad = cad + "Zombie muerto!! \n"
                                 }

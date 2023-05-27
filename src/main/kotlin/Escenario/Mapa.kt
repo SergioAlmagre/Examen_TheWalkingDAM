@@ -24,9 +24,6 @@ class Mapa {
 //    }
 
     fun getPosicion(fil:Int, col:Int):Any?{
-        println("Desde getPosicion")
-        println(fil)
-        println(col)
         return mapa[fil][col]!!.objeto
     }
 
