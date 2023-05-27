@@ -175,6 +175,21 @@ object Conexion {
         return so
     }
 
+    fun totalPersonajes():Int{
+        var cantidad = 0
+        var sentencia = "select coutn (*) from personajes"
+        try {
+            abrirConexion()
+            var pstmt = conexion!!.prepareStatement(sentencia)
+            registros = pstmt.executeQuery()
+            cantidad = registros!!.getInt(1)
+            cerrarConexion()
+        }catch (e:Exception){
+            Datos.gestionErrores(e,sentencia)
+        }
+        return cantidad
+    }
+
 
 
 

@@ -49,32 +49,54 @@ class Juego {
         return zom
     }
 
-    fun colocarZombie(){
-        var posicion = posicionAzar()
-        var fil = posicion[0]
-        var col = posicion[1]
-        var colocado = false
-        var contador = 1024
+    fun objenerPersonaje():Personaje?{
+        var p: Personaje? = null
+        var extraido:Boolean = false
+        var max = Conexion.totalPersonajes()
+
         do {
-            if(esPosicionValida(fil,col)){
-                if (esPosicionLibre(fil,col)){
-                    mapa.setPosicion(fil,col,popZombie()!!)
-                    colocado = true
-                    zombiesVivos++
-                }else{
-                    posicion = posicionAzar()
+            var num = Random.nextInt(0,max+1)
+            if (allPersonaje!!.isNotEmpty()) {
+                p = allPersonaje!!.get(num)
+                if (p.nombre != "Shopie"){
+                    extraido = true
+                    allPersonaje!!.removeFirst()
                 }
-            }else{
-                posicion = posicionAzar()
+            } else {
+                println("cola vacia")
+                allPersonaje = Conexion.obtenerPersonajes()
             }
-            fil = posicion[0]
-            col = posicion[1]
-            contador--
-        }while(!colocado && contador != 0)
-        if (contador == 0){
-            println("no hay huecos libres")
-        }
+        }while (!extraido)
+        return p
     }
+
+
+//    fun colocarZombie(){
+//        var posicion = posicionAzar()
+//        var fil = posicion[0]
+//        var col = posicion[1]
+//        var colocado = false
+//        var contador = 1024
+//        do {
+//            if(esPosicionValida(fil,col)){
+//                if (esPosicionLibre(fil,col)){
+//                    mapa.setPosicion(fil,col,popZombie()!!)
+//                    colocado = true
+//                    zombiesVivos++
+//                }else{
+//                    posicion = posicionAzar()
+//                }
+//            }else{
+//                posicion = posicionAzar()
+//            }
+//            fil = posicion[0]
+//            col = posicion[1]
+//            contador--
+//        }while(!colocado && contador != 0)
+//        if (contador == 0){
+//            println("no hay huecos libres")
+//        }
+//    }
 
     fun colocarObjeto(objeto:Any){
         var posicion = posicionAzar()

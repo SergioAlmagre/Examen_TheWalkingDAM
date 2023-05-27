@@ -65,6 +65,7 @@ class Principal:Initializable {
             comboTipoCopia.items.addAll(*tipoCopia)
             var partida = Juego()
             partida.colocarObjeto(partida.shophie!!)
+            partida.colocarObjeto(partida.objenerPersonaje()!!)
 
             temporizador = javax.swing.Timer(1000, object : ActionListener {
                 override fun actionPerformed(e: java.awt.event.ActionEvent?) {
