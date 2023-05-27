@@ -24,7 +24,6 @@ class Juego {
         shophie = Conexion.obtenerSophia()
     }
 
-
     override fun toString(): String {
         return "Juego(mapa=$mapa, allZombies=$allZombies, allPersonaje=$allPersonaje, shophie=$shophie, zombiesVivos=$zombiesVivos, pausado=$pausado)"
     }
@@ -148,7 +147,7 @@ class Juego {
                                         objetoA.municion--
                                         mensajesJuego =  "$objetoB muerto!!  \n"
                                     }else{
-                                        println("no tiene munción y se ha encontrado con un zombie")
+                                        mensajesJuego = "no tiene munción y se ha encontrado con un zombie"
                                     }
                                 }else if(objetoB is Personaje){
                                     if (objetoB.nombre == nombreEstrella){
@@ -162,6 +161,7 @@ class Juego {
                 }
             }
         }catch (e:Exception){
+            e.printStackTrace()
             Datos.gestionErrores(e,"mover")
         }
     }
@@ -193,7 +193,7 @@ class Juego {
 
     fun esPosicionValida(fil:Int, col:Int):Boolean{
         var esValida = false
-        if(fil >= 0 && fil <= mapa.filas() && col >= 0 && col <= mapa.columnas()){
+        if(fil >= 0 && fil <= mapa.filas()-1 && col >= 0 && col <= mapa.columnas()-1){
                 esValida = true
         }
         return esValida

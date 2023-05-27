@@ -110,7 +110,7 @@ class Principal:Initializable {
                             for (i in 0..  partida.mapa.filas()-1){
                                 val fila = Fila("!","!","!","!")
                                 tablaJuego.items.add(fila)
-//                                temporizador.stop()
+                                temporizador.stop()
                             }
                         }
                     }
@@ -131,7 +131,7 @@ class Principal:Initializable {
                         infoPartidaField.text = "Fin de partida por tiempo agotado\n"
                         historial = historial + fechaYHora + infoPartidaField.text
                         tablaJuego.items.clear()
-//                        temporizador.stop()
+                        temporizador.stop()
                     }
 
                     tiempo++
@@ -159,6 +159,11 @@ class Principal:Initializable {
             )
             val nombreArchivo = ventanaGuardar.showSaveDialog(null)
             var archivo = FileWriter(nombreArchivo, false)
+
+            for (e in partida.personajesElegidos){
+                historial = historial +" - "+ e.nombre +" - "+ e.id +" - "+ e.vida +" - "+ e.municion + "\n"
+            }
+
             archivo.write(historial)
             archivo.close()
         }catch (e:Exception){
@@ -195,7 +200,7 @@ class Principal:Initializable {
 
     @FXML
     fun reiniciarButton(event: ActionEvent) {
-//        temporizador.stop()
+
     var mensaje = "Reiniciando partida"
         infoPartidaField.text = mensaje
         for (i in 0..10){
@@ -217,6 +222,7 @@ class Principal:Initializable {
         partida.mensajesJuego = ""
         infoPartidaField.text = ""
         historial = ""
+        temporizador.start()
 
     }
 
