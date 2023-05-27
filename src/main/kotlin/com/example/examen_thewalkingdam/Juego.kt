@@ -12,6 +12,7 @@ class Juego {
     var allZombies:ArrayList<Zombie> = ArrayList()
     var allPersonaje:ArrayList<Personaje> = ArrayList()
     var shophie:Personaje? = null
+    var nombreEstrella = "Shophie"
     var zombiesVivos:Int = 0
     var pausado:Boolean = false
 
@@ -52,13 +53,14 @@ class Juego {
     fun objenerPersonaje():Personaje?{
         var p: Personaje? = null
         var extraido:Boolean = false
-        var max = Conexion.totalPersonajes()
+        var max = Conexion.totalPersonajes() -1
+        println(max)
         try {
             do {
-                var num = Random.nextInt(0, max + 1)
+                var num = Random.nextInt(0, max)
                 if (allPersonaje!!.isNotEmpty()) {
                     p = allPersonaje!!.get(num)
-                    if (p.nombre != "Shopie") {
+                    if (p.nombre != nombreEstrella) {
                         extraido = true
                         allPersonaje!!.removeFirst()
                     }
@@ -74,33 +76,6 @@ class Juego {
     }
 
 
-//    fun colocarZombie(){
-//        var posicion = posicionAzar()
-//        var fil = posicion[0]
-//        var col = posicion[1]
-//        var colocado = false
-//        var contador = 1024
-//        do {
-//            if(esPosicionValida(fil,col)){
-//                if (esPosicionLibre(fil,col)){
-//                    mapa.setPosicion(fil,col,popZombie()!!)
-//                    colocado = true
-//                    zombiesVivos++
-//                }else{
-//                    posicion = posicionAzar()
-//                }
-//            }else{
-//                posicion = posicionAzar()
-//            }
-//            fil = posicion[0]
-//            col = posicion[1]
-//            contador--
-//        }while(!colocado && contador != 0)
-//        if (contador == 0){
-//            println("no hay huecos libres")
-//        }
-//    }
-
     fun colocarObjeto(objeto:Any){
         var posicion = posicionAzar()
         var fil = posicion[0]
@@ -112,7 +87,9 @@ class Juego {
                 if (esPosicionLibre(fil,col)){
                     mapa.setPosicion(fil,col,objeto!!)
                     colocado = true
-                    zombiesVivos++
+                    if(objeto is Zombie){
+                        zombiesVivos++
+                    }
                 }else{
                     posicion = posicionAzar()
                 }
@@ -129,44 +106,57 @@ class Juego {
     }
 
 
-
-    fun mover(){
+    fun mover():String{
         var objetoA: Any? = null
         var objetoB: Any? = null
         var esValida = false
         var nFil = 0
         var nCol = 0
+        var cad = ""
 
-        for (f in 0..mapa.filas() - 1) {
-            for (c in 0..mapa.columnas() - 1) {
-                try {
-                    do {
-                        var esIgual = false
-                        var nPosiciones = obtenerPosicionMovimiento()
-                        nFil = nPosiciones[0]+f
-                        nCol = nPosiciones[1]+c
-                        esValida = esPosicionValida(nFil, nCol)
-                        if (nFil == f && nCol == c) {
-                            esIgual = true
-                        }
-                    } while (!esValida || esIgual)
+        try {
+            for (f in 0..mapa.filas()-1) {
+                for (c in 0..mapa.columnas()-1) {
+                    println("Desde mover")
+                    println(f)
+                    println(c)
 
                     objetoA = mapa.getPosicion(f, c)
-                    objetoB = mapa.getPosicion(nFil, nCol)
 
-                    if (objetoA != null) {
-                        if (objetoB == null) {
-                            mapa.setPosicion(nFil, nCol, objetoA)
-                            mapa.setPosicion(f, c, null)
-                        } else {
-                            println("funcion de pelear")
+                    if (objetoA is Personaje && objetoA.nombre != nombreEstrella) {
+                        do {
+                            var esIgual = false
+                            var nPosiciones = obtenerPosicionMovimiento()
+                            nFil = nPosiciones[0] + f
+                            nCol = nPosiciones[1] + c
+                            esValida = esPosicionValida(nFil, nCol)
+                            if (nFil == f && nCol == c) {
+                                esIgual = true
+                            }
+                        } while (!esValida || esIgual)
+
+                        objetoB = mapa.getPosicion(nFil, nCol)
+
+                        if (objetoA != null) {
+                            if (objetoB == null) {
+                                mapa.setPosicion(nFil, nCol, objetoA)
+                                mapa.setPosicion(f, c, null)
+                            } else {
+                                println("funcion de pelear")
+                                if (objetoB is Zombie){
+                                    mapa.setPosicion(nFil,nCol,null)
+                                    objetoA.municion--
+                                    cad = cad + "Zombie muerto!! \n"
+                                }
+                            }
                         }
                     }
-                }catch (e:Exception){
-                    Datos.gestionErrores(e,"mover")
                 }
             }
+        }catch (e:Exception){
+            Datos.gestionErrores(e,"mover")
         }
+        return cad
     }
 
 
@@ -187,8 +177,8 @@ class Juego {
     fun posicionAzar():ArrayList<Int>{
         var posiciones = ArrayList<Int>()
 
-        var fil = Random.nextInt(0,mapa.filas()+1)
-        var col = Random.nextInt(0,mapa.columnas()+1)
+        var fil = Random.nextInt(0,mapa.filas())
+        var col = Random.nextInt(0,mapa.columnas())
 
         posiciones.add(fil)
         posiciones.add(col)
@@ -198,7 +188,7 @@ class Juego {
 
     fun esPosicionValida(fil:Int, col:Int):Boolean{
         var esValida = false
-        if(fil >= 0 && fil < mapa.filas() && col >= 0 && col < mapa.columnas()){
+        if(fil >= 0 && fil <= mapa.filas() && col >= 0 && col <= mapa.columnas()){
                 esValida = true
         }
         return esValida
@@ -212,26 +202,6 @@ class Juego {
             return esLibre
     }
 
-
-
-    fun pelea(fil:Int, col:Int) {
-        var z:Zombie? = null
-        var p:Personaje? = null
-
-        try {
-             if (mapa.getPosicion(fil,col) is Zombie){
-                 z = mapa.getPosicion(fil,col) as Zombie
-             }
-             else if(mapa.getPosicion(fil,col) is Personaje){
-                 p = mapa.getPosicion(fil,col) as Personaje
-                 }
-
-
-        }catch (e:Exception){
-            Datos.gestionErrores(e,"pelea")
-        }
-
-    }
 
 
 }

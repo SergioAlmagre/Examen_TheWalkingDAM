@@ -4,12 +4,12 @@ class Mapa {
      var mapa = Array(4){Array<Casilla?>(4){ Casilla() }}
 
     fun filas():Int{
-        var cantidad = mapa.size-1
+        var cantidad = mapa.size
         return cantidad
     }
 
     fun columnas():Int{
-        var cantidad = mapa[0].size-1
+        var cantidad = mapa[0].size
         return cantidad
     }
 
@@ -24,6 +24,9 @@ class Mapa {
 //    }
 
     fun getPosicion(fil:Int, col:Int):Any?{
+        println("Desde getPosicion")
+        println(fil)
+        println(col)
         return mapa[fil][col]!!.objeto
     }
 
@@ -36,9 +39,8 @@ class Mapa {
         var cad = ""
         var f = 0
         var c = 0
-        for (f in 0..filas()){
-
-            for (c in 0..columnas()){
+        for (f in 0..filas()-1){
+            for (c in 0..columnas()-1){
                 cad = cad + "Fila $f - Columna $c" +" - "
                 cad = cad + getPosicion(f,c).toString() + "\t\n"
             }
