@@ -1,0 +1,4 @@
+package Zombies
+
+class ZombiePodrido {
+}

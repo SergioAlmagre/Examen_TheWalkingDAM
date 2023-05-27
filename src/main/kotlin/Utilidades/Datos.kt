@@ -1,0 +1,4 @@
+package BBDD
+
+object Datos {
+}
