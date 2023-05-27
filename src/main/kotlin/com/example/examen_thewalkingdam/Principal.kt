@@ -17,6 +17,9 @@ import javafx.scene.control.*
 import java.awt.event.ActionListener
 import java.io.FileWriter
 import java.net.URL
+import java.text.DateFormat
+import java.time.LocalDate
+import java.time.LocalTime
 import java.util.*
 import javax.swing.Timer
 import kotlin.random.Random
@@ -25,6 +28,10 @@ class Principal:Initializable {
 
     var tiempo = 1
     var contador = 60
+    var partida = Juego()
+
+    var historial = ""
+
 
     companion object {
         lateinit var temporizador: Timer
@@ -64,14 +71,14 @@ class Principal:Initializable {
             var tipoCopia = arrayOf("De texto", "Base de datos")
             comboTipoCopia.promptText = "Seleccione tipo"
             comboTipoCopia.items.addAll(*tipoCopia)
-            var partida = Juego()
+
             partida.colocarObjeto(partida.shophie!!)
             for (i in 0..2){
                 partida.colocarObjeto(partida.objenerPersonaje()!!)
             }
             temporizador = javax.swing.Timer(1000, object : ActionListener {
                 override fun actionPerformed(e: java.awt.event.ActionEvent?) {
-
+                    var fechaYHora = LocalDate.now().toString() + " - "+LocalTime.now().toString().substring(0,8) + " - "
                     progressBar.progress = contador.toDouble() / 60
                     Platform.runLater{
                         if (tiempo % 1 == 0) {
@@ -82,6 +89,7 @@ class Principal:Initializable {
                                     partida.colocarObjeto(partida.popZombie()!!)
                                 }
                                     infoPartidaField.text = partida.mover()
+                                    historial = historial + fechaYHora + infoPartidaField.text + "\n"
                                     tablaJuego.items.clear()
                                     for (i in 0..  partida.mapa.filas()-1){
                                         val fila = Fila(partida.mapa.getPosicion(i,0)?.toString() ?: "",
@@ -126,7 +134,7 @@ class Principal:Initializable {
             )
             val nombreArchivo = ventanaGuardar.showSaveDialog(null)
             var archivo = FileWriter(nombreArchivo, false)
-            archivo.write("Esto es un test escribiendo directamente un string")
+            archivo.write(historial)
             archivo.close()
         }catch (e:Exception){
             Datos.gestionErrores(e,"guardarButton")
