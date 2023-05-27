@@ -1,14 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
 
+<AnchorPane prefHeight="425.0" prefWidth="583.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.examen_thewalkingdam.DetalleController">
+   <children>
+      <TitledPane animated="false" layoutX="37.0" layoutY="41.0" prefHeight="143.0" prefWidth="505.0" text="Datos comunes">
+        <content>
+          <AnchorPane fx:id="datosComunesPane" minHeight="0.0" minWidth="0.0" prefHeight="117.0" prefWidth="420.0">
+               <children>
+                  <Text layoutX="38.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Velocidad" />
+                  <Text layoutX="38.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tiempo infectados" />
+                  <Text layoutX="38.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cap. de infección" />
+                  <Text layoutX="406.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Km/h" />
+                  <Text layoutX="406.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\%" />
+                  <Text layoutX="406.0" layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Meses" />
+                  <TextField fx:id="velocidadField" layoutX="152.0" layoutY="10.0" prefHeight="26.0" prefWidth="242.0" />
+                  <TextField fx:id="capInfecField" layoutX="152.0" layoutY="45.0" prefHeight="26.0" prefWidth="242.0" />
+                  <TextField fx:id="tiempoInfecField" layoutX="151.0" layoutY="77.0" prefHeight="26.0" prefWidth="243.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
+      <TitledPane animated="false" layoutX="37.0" layoutY="208.0" prefHeight="143.0" prefWidth="164.0" text="Podridos">
+         <content>
+            <AnchorPane fx:id="podridosPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <CheckBox fx:id="checkSePuedenMover" layoutX="20.0" layoutY="49.0" mnemonicParsing="false" text="Se pueden mover?" />
+               </children>
+            </AnchorPane>
+         </content>
+      </TitledPane>
+      <TitledPane animated="false" layoutX="208.0" layoutY="208.0" prefHeight="143.0" prefWidth="164.0" text="Pupas">
+         <content>
+            <AnchorPane fx:id="pupasPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <RadioButton fx:id="siRadio" layoutX="38.0" layoutY="33.0" mnemonicParsing="false" text="Si">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="pupasGroup" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="noRadio" layoutX="37.0" layoutY="58.0" mnemonicParsing="false" text="No" toggleGroup="$pupasGroup" />
+               </children>
+            </AnchorPane>
+         </content>
+      </TitledPane>
+      <TitledPane animated="false" layoutX="380.0" layoutY="208.0" prefHeight="143.0" prefWidth="164.0" text="Normales">
+         <content>
+            <AnchorPane fx:id="normalPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+         </content>
+      </TitledPane>
+      <Button layoutX="126.0" layoutY="377.0" mnemonicParsing="false" onAction="#volverButton" prefHeight="26.0" prefWidth="164.0" text="Volver" />
+      <Button layoutX="298.0" layoutY="377.0" mnemonicParsing="false" onAction="#guardarButton" prefHeight="26.0" prefWidth="164.0" text="Guardar" />
+   </children>
 </AnchorPane>

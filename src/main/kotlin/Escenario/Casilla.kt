@@ -1,6 +1,10 @@
-package com.example.examen_thewalkingdam
+package Escenario
 
 class Casilla {
-    private var casilla = ArrayList<Any>()
+    var objeto:Any? = null
+    override fun toString(): String {
+        return "Casilla(casilla=$objeto)"
+    }
+
 
 }

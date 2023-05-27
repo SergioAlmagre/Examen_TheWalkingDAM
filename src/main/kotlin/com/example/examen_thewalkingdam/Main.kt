@@ -1,6 +1,9 @@
 package com.example.examen_thewalkingdam
 
 import BBDD.Conexion
+import Escenario.Mapa
+import Zombies.Zombie
+import Zombies.ZombiePupas
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
@@ -18,4 +21,14 @@ class HelloApplication : Application() {
 
 fun main() {
     Application.launch(HelloApplication::class.java)
+
+//    var ma = Mapa()
+//    ma.unirTodosLosZombies()
+//    for (i in ma.colaZombies){
+//        println(i.toString())
+//    }
+//    ma.colocarZombie()
+//    ma.colocarZombie()
+//    ma.colocarZombie()
+//    println(ma.toString())
 }
