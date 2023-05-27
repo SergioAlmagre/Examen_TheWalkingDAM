@@ -8,7 +8,7 @@ import Zombies.Zombie
 import kotlin.random.Random
 
 class Juego {
-    var mapa:Mapa = Mapa()
+    var mapa: Mapa = Mapa()
     var allZombies:ArrayList<Zombie> = ArrayList()
     var allPersonaje:ArrayList<Personaje> = Conexion.obtenerPersonajes()
     var shophie:Personaje? = null
@@ -16,6 +16,8 @@ class Juego {
     var zombiesVivos:Int = 0
     var pausado:Boolean = false
     var encontrada:Boolean = false
+    var personajesElegidos:ArrayList<Personaje> = ArrayList()
+    var mensajesJuego = ""
 
     init {
         unirTodosLosZombies()
@@ -66,7 +68,7 @@ class Juego {
                         allPersonaje!!.removeFirst()
                     }
                 } else {
-                    println("cola vacia")
+//                    println("cola vacia")
                     allPersonaje = Conexion.obtenerPersonajes()
                 }
             } while (!extraido)
@@ -102,18 +104,17 @@ class Juego {
             contador--
         }while(!colocado && contador != 0)
         if (contador == 0){
-            println("no hay huecos libres")
+//            println("no hay supuestos huecos libres")
         }
     }
 
 
-    fun mover():String{
+    fun mover(){
         var objetoA: Any? = null
         var objetoB: Any? = null
         var esValida = false
         var nFil = 0
         var nCol = 0
-        var cad = ""
 
         try {
             for (f in 0..mapa.filas()-1) {
@@ -140,15 +141,18 @@ class Juego {
                                 mapa.setPosicion(nFil, nCol, objetoA)
                                 mapa.setPosicion(f, c, null)
                             } else {
-                                println("funcion de pelear")
                                 if (objetoB is Zombie){
-                                    mapa.setPosicion(nFil,nCol,objetoA)
-                                    mapa.setPosicion(f,c,null)
-                                    objetoA.municion--
-                                    cad = cad + "Zombie muerto!! \n"
+                                    if (objetoA.municion > 0){
+                                        mapa.setPosicion(nFil,nCol,objetoA)
+                                        mapa.setPosicion(f,c,null)
+                                        objetoA.municion--
+                                        mensajesJuego =  "$objetoB muerto!!  \n"
+                                    }else{
+                                        println("no tiene munción y se ha encontrado con un zombie")
+                                    }
                                 }else if(objetoB is Personaje){
                                     if (objetoB.nombre == nombreEstrella){
-                                        cad = "Has encontrado a $nombreEstrella"
+                                        mensajesJuego = "${objetoB.nombre} ha encontrado a $nombreEstrella"
                                         encontrada = true
                                     }
                                 }
@@ -160,10 +164,7 @@ class Juego {
         }catch (e:Exception){
             Datos.gestionErrores(e,"mover")
         }
-        return cad
     }
-
-
 
 
     fun obtenerPosicionMovimiento():ArrayList<Int>{
@@ -204,6 +205,19 @@ class Juego {
                 esLibre = true
             }
             return esLibre
+    }
+
+    fun convertirPersonajeAZombie(idPersonaje:String){
+        for (f in 0..mapa.filas()-1){
+            for (c in 0..mapa.columnas()-1){
+                if (mapa.getPosicion(f,c) is Personaje){
+                    if ((mapa.getPosicion(f,c) as Personaje).id == idPersonaje){
+                        mapa.setPosicion(f,c,colocarObjeto(popZombie()!!))
+                    }
+                }
+            }
+        }
+
     }
 
 

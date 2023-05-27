@@ -18,7 +18,6 @@ import javafx.scene.control.*
 import java.awt.event.ActionListener
 import java.io.FileWriter
 import java.net.URL
-import java.text.DateFormat
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.*
@@ -72,39 +71,56 @@ class Principal:Initializable {
             var tipoCopia = arrayOf("De texto", "Base de datos")
             comboTipoCopia.promptText = "Seleccione tipo"
             comboTipoCopia.items.addAll(*tipoCopia)
-
+// COLOCAR A LA PERSONAJE ESTRELLA
             partida.colocarObjeto(partida.shophie!!)
+//  AÑADIR A 3 PERSONAJES VALIENTES
             for (i in 0..2){
-                partida.colocarObjeto(partida.objenerPersonaje()!!)
+                val p:Personaje? = partida.objenerPersonaje()
+                partida.colocarObjeto(p!!)
+                partida.personajesElegidos.add(p)
             }
+
             temporizador = javax.swing.Timer(1000, object : ActionListener {
                 override fun actionPerformed(e: java.awt.event.ActionEvent?) {
                     var fechaYHora = LocalDate.now().toString() + " - "+LocalTime.now().toString().substring(0,8) + " - "
                     progressBar.progress = contador.toDouble() / 60
                     Platform.runLater{
-                        if (tiempo % 1 == 0) {
-                            if (partida.encontrada == false) {
-
-                                var num = Random.nextInt(2,3)
-                                for (i in 0..num){
-                                    partida.colocarObjeto(partida.popZombie()!!)
-                                }
-                                    infoPartidaField.text = partida.mover()
-                                    historial = historial + fechaYHora + infoPartidaField.text + "\n"
-                                    tablaJuego.items.clear()
-                                    for (i in 0..  partida.mapa.filas()-1){
-                                        val fila = Fila(partida.mapa.getPosicion(i,0)?.toString() ?: "",
-                                                        partida.mapa.getPosicion(i,1)?.toString() ?: "",
-                                                        partida.mapa.getPosicion(i,2)?.toString() ?: "",
-                                                        partida.mapa.getPosicion(i,3)?.toString() ?: "")
-                                        tablaJuego.items.add(fila)
-                                    }
-                            }else{
+                        if (partida.encontrada == false) {
+//  AÑADIR ENTRE 2 Y 3 ZOMBIES A LA PARTIDA
+                            var num = Random.nextInt(2,3)
+                            for (i in 0..num){
+                                partida.colocarObjeto(partida.popZombie()!!)
+                            }
+//  MOSTRAR ACTUALIZACIONES Y GUARDAR EL HISTORIAL DE EVENTOS EN EL JUEGO
+                                partida.mover()
+                                infoPartidaField.text = partida.mensajesJuego
+                                historial = historial + fechaYHora + infoPartidaField.text + "\n"
+//  BORRAR TABLA, AÑADIR A LA CLASE FILA EL CONTENIDO DE NUESTRA MATRIZ FILA POR FILA
                                 tablaJuego.items.clear()
                                 for (i in 0..  partida.mapa.filas()-1){
-                                    val fila = Fila("!","!","!","!")
+                                    val fila = Fila(partida.mapa.getPosicion(i,0)?.toString() ?: "",
+                                                    partida.mapa.getPosicion(i,1)?.toString() ?: "",
+                                                    partida.mapa.getPosicion(i,2)?.toString() ?: "",
+                                                    partida.mapa.getPosicion(i,3)?.toString() ?: "")
                                     tablaJuego.items.add(fila)
-                                    temporizador.stop()
+                                }
+                        }else{
+//  FANTASIA CUANDO SE HA ENCONTRADO AL PERSONAJE ELEGIDO
+                            tablaJuego.items.clear()
+                            for (i in 0..  partida.mapa.filas()-1){
+                                val fila = Fila("!","!","!","!")
+                                tablaJuego.items.add(fila)
+                                temporizador.stop()
+                            }
+                        }
+                    }
+//  RESTAR VIDA A PERSONAJES ELEGIDOS SIN MUNICION Y SI NO LE QUEDA, CONVERTIRLO A ZOMBIE
+                    if (tiempo % 10 == 0) {
+                        for (e in partida.personajesElegidos){
+                            if (e.municion <= 0){
+                                e.vida - 10
+                                if (e.vida <= 0){
+                                    partida.convertirPersonajeAZombie(e.id)
                                 }
                             }
                         }
