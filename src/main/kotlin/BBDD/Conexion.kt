@@ -177,12 +177,14 @@ object Conexion {
 
     fun totalPersonajes():Int{
         var cantidad = 0
-        var sentencia = "select coutn (*) from personajes"
+        var sentencia = "select count(*) from personajes"
         try {
             abrirConexion()
             var pstmt = conexion!!.prepareStatement(sentencia)
             registros = pstmt.executeQuery()
-            cantidad = registros!!.getInt(1)
+            if (registros!!.next()){
+                cantidad = registros!!.getInt(1)
+            }
             cerrarConexion()
         }catch (e:Exception){
             Datos.gestionErrores(e,sentencia)

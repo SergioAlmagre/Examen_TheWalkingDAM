@@ -65,8 +65,9 @@ class Principal:Initializable {
             comboTipoCopia.items.addAll(*tipoCopia)
             var partida = Juego()
             partida.colocarObjeto(partida.shophie!!)
-            partida.colocarObjeto(partida.objenerPersonaje()!!)
-
+//            for (i in 0..2){
+//                partida.colocarObjeto(partida.objenerPersonaje()!!)
+//            }
             temporizador = javax.swing.Timer(1000, object : ActionListener {
                 override fun actionPerformed(e: java.awt.event.ActionEvent?) {
                     progressBar.progress = contador.toDouble() / 60
@@ -74,7 +75,8 @@ class Principal:Initializable {
                         if (tiempo % 1 == 0){
 //                            var num = Random.nextInt(2,3)
 //                            for (i in 0..num){
-                                partida.colocarObjeto(partida.popZombie()!!)
+//                                partida.colocarObjeto(partida.popZombie()!!)
+                                partida.mover()
                                 tablaJuego.items.clear()
                                 for (i in 0..  partida.mapa.filas()){
                                     val fila = Fila(partida.mapa.getPosicion(i,0)?.toString() ?: "",

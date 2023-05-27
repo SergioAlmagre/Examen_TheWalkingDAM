@@ -53,20 +53,23 @@ class Juego {
         var p: Personaje? = null
         var extraido:Boolean = false
         var max = Conexion.totalPersonajes()
-
-        do {
-            var num = Random.nextInt(0,max+1)
-            if (allPersonaje!!.isNotEmpty()) {
-                p = allPersonaje!!.get(num)
-                if (p.nombre != "Shopie"){
-                    extraido = true
-                    allPersonaje!!.removeFirst()
+        try {
+            do {
+                var num = Random.nextInt(0, max + 1)
+                if (allPersonaje!!.isNotEmpty()) {
+                    p = allPersonaje!!.get(num)
+                    if (p.nombre != "Shopie") {
+                        extraido = true
+                        allPersonaje!!.removeFirst()
+                    }
+                } else {
+                    println("cola vacia")
+                    allPersonaje = Conexion.obtenerPersonajes()
                 }
-            } else {
-                println("cola vacia")
-                allPersonaje = Conexion.obtenerPersonajes()
-            }
-        }while (!extraido)
+            } while (!extraido)
+        }catch (e:Exception){
+            Datos.gestionErrores(e,"fallo en obtenerPersonaje")
+        }
         return p
     }
 
@@ -127,18 +130,56 @@ class Juego {
 
 
 
-    fun moverser():ArrayList<Int>{
-        /**
-         * 0-fila
-         * 1-colummna
-         */
-        var posiciones = ArrayList<Int>()
-        var fil = Random.nextInt(-1,1)
-        posiciones.add(fil)
-        var col = Random.nextInt(-1,1)
-        posiciones.add(col)
+    fun mover(){
+        var objetoA: Any? = null
+        var objetoB: Any? = null
+        var esValida = false
+        var nFil = 0
+        var nCol = 0
 
-        esPosicionLibre(fil,col)
+        for (f in 0..mapa.filas() - 1) {
+            for (c in 0..mapa.columnas() - 1) {
+                try {
+                    do {
+                        var esIgual = false
+                        var nPosiciones = obtenerPosicionMovimiento()
+                        nFil = nPosiciones[0]+f
+                        nCol = nPosiciones[1]+c
+                        esValida = esPosicionValida(nFil, nCol)
+                        if (nFil == f && nCol == c) {
+                            esIgual = true
+                        }
+                    } while (!esValida || esIgual)
+
+                    objetoA = mapa.getPosicion(f, c)
+                    objetoB = mapa.getPosicion(nFil, nCol)
+
+                    if (objetoA != null) {
+                        if (objetoB == null) {
+                            mapa.setPosicion(nFil, nCol, objetoA)
+                            mapa.setPosicion(f, c, null)
+                        } else {
+                            println("funcion de pelear")
+                        }
+                    }
+                }catch (e:Exception){
+                    Datos.gestionErrores(e,"mover")
+                }
+            }
+        }
+    }
+
+
+
+
+    fun obtenerPosicionMovimiento():ArrayList<Int>{
+        var posiciones = ArrayList<Int>()
+
+        var fil = Random.nextInt(-1,2)
+        var col = Random.nextInt(-1,2)
+
+        posiciones.add(fil)
+        posiciones.add(col)
 
         return  posiciones
     }
@@ -147,8 +188,9 @@ class Juego {
         var posiciones = ArrayList<Int>()
 
         var fil = Random.nextInt(0,mapa.filas()+1)
-        posiciones.add(fil)
         var col = Random.nextInt(0,mapa.columnas()+1)
+
+        posiciones.add(fil)
         posiciones.add(col)
 
         return  posiciones
@@ -156,12 +198,8 @@ class Juego {
 
     fun esPosicionValida(fil:Int, col:Int):Boolean{
         var esValida = false
-        try{
-            if (mapa.getPosicion(fil,col) == null || mapa.getPosicion(fil,col) != null){
+        if(fil >= 0 && fil < mapa.filas() && col >= 0 && col < mapa.columnas()){
                 esValida = true
-            }
-        }catch (e:Exception){
-
         }
         return esValida
     }

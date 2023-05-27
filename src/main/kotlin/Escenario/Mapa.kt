@@ -27,7 +27,7 @@ class Mapa {
         return mapa[fil][col]!!.objeto
     }
 
-    fun setPosicion(fil:Int, col:Int,objeto:Any){
+    fun setPosicion(fil:Int, col:Int,objeto:Any?){
         mapa[fil][col]!!.objeto = objeto
     }
 
