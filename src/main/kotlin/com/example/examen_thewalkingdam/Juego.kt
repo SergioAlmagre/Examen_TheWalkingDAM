@@ -63,7 +63,6 @@ class Juego {
                     p = allPersonaje!!.get(num)
                     if (p.nombre != nombreEstrella) {
                         extraido = true
-                        allPersonaje!!.removeFirst()
                     }
                 } else {
 //                    println("cola vacia")
@@ -145,13 +144,13 @@ class Juego {
                                         mapa.setPosicion(f,c,null)
                                         zombiesVivos--
                                         objetoA.municion--
-                                        mensajesJuego =  "$objetoB muerto!!  \n"
+                                        mensajesJuego =  "${objetoA.nombre} elimina a $objetoB \n"
                                     }else{
-                                        mensajesJuego = "no tiene munción y se ha encontrado con un zombie"
+                                        mensajesJuego = "$objetoA no tiene munción y un zombie le ha soplado la oreja"
                                     }
                                 }else if(objetoB is Personaje){
                                     if (objetoB.nombre == nombreEstrella){
-                                        mensajesJuego = "${objetoB.nombre} ha encontrado a $nombreEstrella"
+                                        mensajesJuego = "${objetoA.nombre} ha encontrado a $nombreEstrella"
                                         encontrada = true
                                     }
                                 }

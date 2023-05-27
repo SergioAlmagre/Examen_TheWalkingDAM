@@ -4,17 +4,17 @@ import Personaje.Personaje
 import Utilidades.Datos
 import Zombies.Zombie
 import javafx.application.Platform
+import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.fxml.Initializable
 import javafx.scene.Scene
+import javafx.scene.control.*
 import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.input.MouseEvent
 import javafx.stage.FileChooser
 import javafx.stage.Modality
 import javafx.stage.Stage
-import javafx.event.ActionEvent
-import javafx.scene.control.*
 import java.awt.event.ActionListener
 import java.io.FileWriter
 import java.net.URL
@@ -31,11 +31,24 @@ class Principal:Initializable {
     var partida = Juego()
     var historial = ""
     val posicionClick = Array<Int>(2){0}
+    val textoFinal = mensajeFinal()
 
 
     companion object {
         lateinit var temporizador: Timer
     }
+
+    @FXML
+    private lateinit var continuarIDButton: Button
+
+    @FXML
+    private lateinit var pausaIDButton: Button
+
+    @FXML
+    private lateinit var reiniciarIDButton: Button
+
+    @FXML
+    private lateinit var verInfoIdButton: Button
 
     @FXML
     private lateinit var c1: TableColumn<Fila, Any>
@@ -63,6 +76,14 @@ class Principal:Initializable {
 
     override fun initialize(p0: URL?, p1: ResourceBundle?) {
         try {
+            c1.cellValueFactory = PropertyValueFactory("c1")
+            c2.cellValueFactory = PropertyValueFactory("c2")
+            c3.cellValueFactory = PropertyValueFactory("c3")
+            c4.cellValueFactory = PropertyValueFactory("c4")
+
+            var tipoCopia = arrayOf("De texto", "Base de datos")
+            comboTipoCopia.promptText = "Seleccione tipo"
+            comboTipoCopia.items.addAll(*tipoCopia)
 
             inicializarPartida()
 
@@ -94,10 +115,21 @@ class Principal:Initializable {
 //  FANTASIA CUANDO SE HA ENCONTRADO AL PERSONAJE ELEGIDO
                             tablaJuego.items.clear()
                             for (i in 0..  partida.mapa.filas()-1){
-                                val fila = Fila("!","!","!","!")
+                                val fila = Fila(
+                                                textoFinal[i][0],
+                                                textoFinal[i][1],
+                                                textoFinal[i][2],
+                                                textoFinal[i][3])
                                 tablaJuego.items.add(fila)
-                                temporizador.stop()
                             }
+//                            for (i in 0..  partida.mapa.filas()-1){
+//                                val fila = Fila("!","!","!","!")
+//                                tablaJuego.items.add(fila)
+//                                temporizador.stop()
+//                                reiniciarIDButton.requestFocus()
+//                            }
+
+
                         }
                     }
 //  RESTAR VIDA A PERSONAJES ELEGIDOS SIN MUNICION Y SI NO LE QUEDA, CONVERTIRLO A ZOMBIE
@@ -105,6 +137,8 @@ class Principal:Initializable {
                         for (e in partida.personajesElegidos){
                             if (e.municion <= 0){
                                 e.vida - 10
+                                infoPartidaField.text = "${e.nombre} pierde vida, le queda ${e.vida}"
+                                addInforme(infoPartidaField.text)
                                 if (e.vida <= 0){
                                     partida.convertirPersonajeAZombie(e.id)
                                     infoPartidaField.text = "Personaje ${e.nombre} convertido en zombie\n"
@@ -113,11 +147,12 @@ class Principal:Initializable {
                             }
                         }
                     }
-                    if (tiempo % 300 == 0){
+                    if (tiempo % 120 == 0){
                         infoPartidaField.text = "Fin de partida por tiempo agotado\n"
                         addInforme(infoPartidaField.text)
                         tablaJuego.items.clear()
                         temporizador.stop()
+                        reiniciarIDButton.requestFocus()
                     }
 
                     tiempo++
@@ -133,14 +168,7 @@ class Principal:Initializable {
         tablaJuego.selectionModel.selectionMode = SelectionMode.SINGLE
     }
     fun inicializarPartida(){
-        c1.cellValueFactory = PropertyValueFactory("c1")
-        c2.cellValueFactory = PropertyValueFactory("c2")
-        c3.cellValueFactory = PropertyValueFactory("c3")
-        c4.cellValueFactory = PropertyValueFactory("c4")
 
-        var tipoCopia = arrayOf("De texto", "Base de datos")
-        comboTipoCopia.promptText = "Seleccione tipo"
-        comboTipoCopia.items.addAll(*tipoCopia)
 // COLOCAR A LA PERSONAJE ESTRELLA
         partida.colocarObjeto(partida.sophie!!)
         infoPartidaField.text = "Sophie ha sido escondida"
@@ -211,6 +239,7 @@ class Principal:Initializable {
         infoPartidaField.text = "Partida pausada"
         addInforme(infoPartidaField.text)
         temporizador.stop()
+        continuarIDButton.requestFocus()
     }
 
     @FXML
@@ -232,6 +261,7 @@ class Principal:Initializable {
             progressBar.progress = contador.toDouble()
             temporizador.start()
             inicializarPartida()
+            infoPartidaField.requestFocus()
         }catch (e:Exception){
             Datos.gestionErrores(e,"reiniciarPartida")
         }
@@ -242,6 +272,7 @@ class Principal:Initializable {
         infoPartidaField.text = "Reanudando partida"
         addInforme(infoPartidaField.text)
         temporizador.start()
+        infoPartidaField.requestFocus()
     }
 
     @FXML
@@ -274,6 +305,23 @@ class Principal:Initializable {
         val guion = " - "
         val salto = "\n"
         historial = historial + fechaYHora + guion + mensaje + salto
+    }
+
+    fun mensajeFinal():Array<Array<String>>{
+        var cad = "PARTIDATERMINADA" // MAX 16 CARACTERES
+        var ma = Array(4){Array<String>(4){""}}
+        var cont = 1
+
+            for (f in 0..ma.size-1){
+                for (c in 0..ma[0].size-1){
+                    ma[f][c] = cad.substring(cont-1,cont)
+                    cont++
+                }
+            }
+
+
+
+        return ma
     }
 
 

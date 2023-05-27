@@ -25,7 +25,7 @@
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="176.0" prefWidth="253.0">
                <children>
-                  <ComboBox fx:id="comboTipoCopia" layoutX="49.0" layoutY="75.0" prefWidth="150.0" />
+                  <ComboBox fx:id="comboTipoCopia" layoutX="49.0" layoutY="75.0" prefWidth="150.0" promptText="Seleccione extensión..." />
                   <Text layoutX="70.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tipo de copia">
                      <font>
                         <Font size="18.0" />
@@ -37,10 +37,10 @@
         </content>
       </TitledPane>
       <ProgressBar fx:id="progressBar" layoutX="112.0" layoutY="263.0" prefHeight="18.0" prefWidth="371.0" progress="0.0" />
-      <Button layoutX="384.0" layoutY="307.0" mnemonicParsing="false" onAction="#verInfoButton" prefHeight="36.0" prefWidth="99.0" text="Ver info" />
+      <Button fx:id="verInfoIdButton" layoutX="384.0" layoutY="307.0" mnemonicParsing="false" onAction="#verInfoButton" prefHeight="36.0" prefWidth="99.0" text="Ver info" />
       <TextField fx:id="infoPartidaField" layoutX="112.0" layoutY="31.0" prefHeight="25.0" prefWidth="371.0" />
-      <Button layoutX="384.0" layoutY="366.0" mnemonicParsing="false" onAction="#pausarButton" prefHeight="36.0" prefWidth="99.0" text="Pausar" />
-      <Button layoutX="384.0" layoutY="486.0" mnemonicParsing="false" onAction="#reiniciarButton" prefHeight="36.0" prefWidth="99.0" text="Reiniciar" />
-      <Button layoutX="384.0" layoutY="421.0" mnemonicParsing="false" onAction="#continuarButton" prefHeight="36.0" prefWidth="99.0" text="Continuar" />
+      <Button fx:id="pausaIDButton" layoutX="384.0" layoutY="366.0" mnemonicParsing="false" onAction="#pausarButton" prefHeight="36.0" prefWidth="99.0" text="Pausar" />
+      <Button fx:id="reiniciarIDButton" layoutX="384.0" layoutY="486.0" mnemonicParsing="false" onAction="#reiniciarButton" prefHeight="36.0" prefWidth="99.0" text="Reiniciar" />
+      <Button fx:id="continuarIDButton" layoutX="384.0" layoutY="421.0" mnemonicParsing="false" onAction="#continuarButton" prefHeight="36.0" prefWidth="99.0" text="Continuar" />
    </children>
 </AnchorPane>
