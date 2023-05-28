@@ -2,6 +2,7 @@ package com.example.examen_thewalkingdam
 
 import Personaje.Personaje
 import Utilidades.Datos
+import Utilidades.Mensaje
 import Zombies.Zombie
 import javafx.application.Platform
 import javafx.event.ActionEvent
@@ -245,30 +246,34 @@ class Principal:Initializable {
     @FXML
     fun reiniciarButton(event: ActionEvent) {
 
-    var mensaje = "Reiniciando partida"
-        try {
-            infoPartidaField.text = mensaje
-            for (i in 0..10){
-                infoPartidaField.text = infoPartidaField.text + "."
-                Thread.sleep(100)
-            }
 
-            addInforme(infoPartidaField.text)
-            tablaJuego.items.clear()
-            partida = Juego()
-            contador = 120
-            tiempo = 1
-            progressBar.progress = contador.toDouble()
-            temporizador.start()
-            inicializarPartida()
-            infoPartidaField.requestFocus()
-        }catch (e:Exception){
-            Datos.gestionErrores(e,"reiniciarPartida")
+        if (Mensaje.alerta("Estas seguro?", "Este juego es adictivo") == ButtonType.YES) {
+            var mensaje = "Reiniciando partida"
+            try {
+                infoPartidaField.text = mensaje
+                for (i in 0..10) {
+                    infoPartidaField.text = infoPartidaField.text + "."
+                    Thread.sleep(100)
+                }
+
+                addInforme(infoPartidaField.text)
+                tablaJuego.items.clear()
+                partida = Juego()
+                contador = 120
+                tiempo = 1
+                progressBar.progress = contador.toDouble()
+                temporizador.start()
+                inicializarPartida()
+                infoPartidaField.requestFocus()
+            } catch (e: Exception) {
+                Datos.gestionErrores(e, "reiniciarPartida")
+            }
         }
     }
 
     @FXML
     fun continuarButton(event: ActionEvent) {
+        Mensaje.informacion("Preparate que seguimos","")
         infoPartidaField.text = "Reanudando partida"
         addInforme(infoPartidaField.text)
         temporizador.start()
@@ -318,8 +323,6 @@ class Principal:Initializable {
                     cont++
                 }
             }
-
-
 
         return ma
     }

@@ -21,14 +21,4 @@ class HelloApplication : Application() {
 
 fun main() {
     Application.launch(HelloApplication::class.java)
-
-//    var ma = Mapa()
-//    ma.unirTodosLosZombies()
-//    for (i in ma.colaZombies){
-//        println(i.toString())
-//    }
-//    ma.colocarZombie()
-//    ma.colocarZombie()
-//    ma.colocarZombie()
-//    println(ma.toString())
 }
