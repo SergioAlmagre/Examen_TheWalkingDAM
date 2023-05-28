@@ -187,36 +187,40 @@ class Principal:Initializable {
         var contenido = ""
         var baseDeDatos = "ahora veré como exportar la base de datos"
 
-        try {
-            var seleccion = comboTipoCopia.selectionModel.selectedIndex
+        if (comboTipoCopia.selectionModel.isEmpty){
+            Mensaje.informacion("Tipo no seleccionado","Seleccione primero un tipo antes de exportar")
+        }else {
+            try {
+                var seleccion = comboTipoCopia.selectionModel.selectedIndex
 
-            for (e in partida.personajesElegidos){
-                historial = historial +" - "+ e.nombre +" - "+ e.id +" - "+ e.vida +" - "+ e.municion + "\n"
-            }
-            var ventanaGuardar = FileChooser()
-            ventanaGuardar.title = "Guardar como..."
-
-            when (seleccion){
-                0 -> {
-                    ventanaGuardar.extensionFilters.addAll(
-                    FileChooser.ExtensionFilter("TXT", "*.txt"))
-                    contenido = historial
+                for (e in partida.personajesElegidos) {
+                    historial = historial + " - " + e.nombre + " - " + e.id + " - " + e.vida + " - " + e.municion + "\n"
                 }
-                1 ->{
-                    ventanaGuardar.extensionFilters.addAll(
-                    FileChooser.ExtensionFilter("SQL", "*.sql"))
+                var ventanaGuardar = FileChooser()
+                ventanaGuardar.title = "Guardar como..."
+
+                when (seleccion) {
+                    0 -> {
+                        ventanaGuardar.extensionFilters.addAll(
+                            FileChooser.ExtensionFilter("TXT", "*.txt"))
+                        contenido = historial
+                    }
+                    1 -> {
+                        ventanaGuardar.extensionFilters.addAll(
+                            FileChooser.ExtensionFilter("SQL", "*.sql"))
+                        contenido = baseDeDatos
+                    }
                 }
+
+                val nombreArchivo = ventanaGuardar.showSaveDialog(null)
+                var archivo = FileWriter(nombreArchivo, false)
+
+                archivo.write(contenido)
+                archivo.close()
+
+            } catch (e: Exception) {
+                Datos.gestionErrores(e, "guardarButton")
             }
-
-            val nombreArchivo = ventanaGuardar.showSaveDialog(null)
-            var archivo = FileWriter(nombreArchivo, false)
-
-            archivo.write(contenido)
-            archivo.close()
-
-
-        }catch (e:Exception){
-            Datos.gestionErrores(e,"guardarButton")
         }
     }
 

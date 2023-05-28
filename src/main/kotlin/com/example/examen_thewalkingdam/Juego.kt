@@ -105,7 +105,7 @@ class Juego {
         }
     }
 
-
+// MOVER TAMBIÉN IMPLEMENTA LAS FUNCIONES DE RECONOCIMIENTO DE CASILLAS CONTIGUAS
     fun mover(){
         var objetoA: Any? = null
         var objetoB: Any? = null
