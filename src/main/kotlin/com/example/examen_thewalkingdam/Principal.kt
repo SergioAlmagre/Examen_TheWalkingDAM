@@ -1,5 +1,6 @@
 package com.example.examen_thewalkingdam
 
+import BBDD.Constantes
 import Personaje.Personaje
 import Utilidades.Datos
 import Utilidades.Mensaje
@@ -17,8 +18,10 @@ import javafx.stage.FileChooser
 import javafx.stage.Modality
 import javafx.stage.Stage
 import java.awt.event.ActionListener
+import java.io.File
 import java.io.FileWriter
 import java.net.URL
+import java.sql.DriverManager
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.*
@@ -326,8 +329,58 @@ class Principal:Initializable {
                     cont++
                 }
             }
-
         return ma
+    }
+
+// INVESTIGANDO.....
+    fun exportarBaseDeDatos(usuario: String, contraseña: String, rutaArchivo: String) {
+        val url = "jdbc:mysql://${Constantes.servidor}:${Constantes.puerto}/${Constantes.bbdd}"
+        val driver = "com.mysql.jdbc.Driver"
+
+        try {
+            Class.forName(driver)
+            val connection = DriverManager.getConnection(url, "${Constantes.usuario}", "${Constantes.passwd}")
+            val metaData = connection.metaData
+
+            // Obtener todas las tablas de la base de datos
+            val tablas = metaData.getTables(null, null, "%", null)
+
+            val archivo = File(rutaArchivo)
+            val writer = FileWriter(archivo)
+
+            while (tablas.next()) {
+                val nombreTabla = tablas.getString("TABLE_NAME")
+                val statement = connection.createStatement()
+                val resultSet = statement.executeQuery("SELECT * FROM $nombreTabla")
+
+                // Generar el script SQL para cada tabla
+                writer.write("-- Tabla: $nombreTabla\n")
+
+                while (resultSet.next()) {
+                    val resultSetMetaData = resultSet.metaData
+                    val columnCount = resultSetMetaData.columnCount
+
+                    // Generar el script SQL para cada fila de la tabla
+                    val valores = StringBuilder()
+
+                    for (i in 1..columnCount) {
+                        val valor = resultSet.getString(i)
+                        valores.append("'$valor', ")
+                    }
+
+                    writer.write("INSERT INTO $nombreTabla VALUES (${valores.removeSuffix(", ")})\n")
+                }
+
+                writer.write("\n")
+            }
+
+            writer.close()
+            connection.close()
+
+            println("La base de datos se ha exportado correctamente al archivo: $rutaArchivo")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 
