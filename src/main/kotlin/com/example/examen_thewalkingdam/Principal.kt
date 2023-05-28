@@ -212,11 +212,11 @@ class Principal:Initializable {
                     }
                 }
 
-                val nombreArchivo = ventanaGuardar.showSaveDialog(null)
-                var archivo = FileWriter(nombreArchivo, false)
+                val archivo = ventanaGuardar.showSaveDialog(null)
+                val archivoWriter = FileWriter(archivo, false)
 
-                archivo.write(contenido)
-                archivo.close()
+                archivoWriter.write(contenido)
+                archivoWriter.close()
 
             } catch (e: Exception) {
                 Datos.gestionErrores(e, "guardarButton")

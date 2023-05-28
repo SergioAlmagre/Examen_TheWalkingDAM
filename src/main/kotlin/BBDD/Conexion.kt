@@ -21,8 +21,7 @@ object Conexion {
 
     // Atributo que nos permite ejecutar una sentencia SQL
     var registros: ResultSet? = null
-
-    var mensaje = ""
+    
     var cod = 0
 
 
