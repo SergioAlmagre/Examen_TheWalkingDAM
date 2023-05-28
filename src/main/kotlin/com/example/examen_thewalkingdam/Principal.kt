@@ -28,7 +28,7 @@ import kotlin.random.Random
 class Principal:Initializable {
 
     var tiempo = 1
-    var contador = 120
+    var contador = 60
     var partida = Juego()
     var historial = ""
     val posicionClick = Array<Int>(2){0}
@@ -114,6 +114,8 @@ class Principal:Initializable {
                                 }
                         }else{
 //  FANTASIA CUANDO SE HA ENCONTRADO AL PERSONAJE ELEGIDO
+                            infoPartidaField.text = "Sophie ha sido rescatada!"
+                            addInforme(infoPartidaField.text)
                             tablaJuego.items.clear()
                             for (i in 0..  partida.mapa.filas()-1){
                                 val fila = Fila(
@@ -122,6 +124,7 @@ class Principal:Initializable {
                                                 textoFinal[i][2],
                                                 textoFinal[i][3])
                                 tablaJuego.items.add(fila)
+                                temporizador.stop()
                             }
                         }
                     }
@@ -140,7 +143,7 @@ class Principal:Initializable {
                             }
                         }
                     }
-                    if (tiempo % 120 == 0){
+                    if (tiempo % 60 == 0){
                         infoPartidaField.text = "Fin de partida por tiempo agotado\n"
                         addInforme(infoPartidaField.text)
                         tablaJuego.items.clear()
@@ -178,23 +181,37 @@ class Principal:Initializable {
 
     @FXML
     fun guardarButton(event: MouseEvent) {
+        var contenido = ""
+        var baseDeDatos = "ahora veré como exportar la base de datos"
         try {
-            var ventanaGuardar = FileChooser()
-            ventanaGuardar.title = "Guardar como..."
-
-            ventanaGuardar.extensionFilters.addAll(
-                FileChooser.ExtensionFilter("TXT", "*.txt"),
-                FileChooser.ExtensionFilter("LOG", "*.log"),
-            )
-            val nombreArchivo = ventanaGuardar.showSaveDialog(null)
-            var archivo = FileWriter(nombreArchivo, false)
+            var seleccion = comboTipoCopia.selectionModel.selectedIndex
 
             for (e in partida.personajesElegidos){
                 historial = historial +" - "+ e.nombre +" - "+ e.id +" - "+ e.vida +" - "+ e.municion + "\n"
             }
+            var ventanaGuardar = FileChooser()
+            ventanaGuardar.title = "Guardar como..."
 
-            archivo.write(historial)
+            when (seleccion){
+                0 -> {
+                    ventanaGuardar.extensionFilters.addAll(
+                    FileChooser.ExtensionFilter("TXT", "*.txt"))
+                    contenido = historial
+                }
+                1 ->{
+                    ventanaGuardar.extensionFilters.addAll(
+                    FileChooser.ExtensionFilter("SQL", "*.sql"))
+                    contenido = baseDeDatos
+                }
+            }
+
+            val nombreArchivo = ventanaGuardar.showSaveDialog(null)
+            var archivo = FileWriter(nombreArchivo, false)
+
+            archivo.write(contenido)
             archivo.close()
+
+
         }catch (e:Exception){
             Datos.gestionErrores(e,"guardarButton")
         }
@@ -237,8 +254,6 @@ class Principal:Initializable {
 
     @FXML
     fun reiniciarButton(event: ActionEvent) {
-
-
         if (Mensaje.alerta("Estas seguro?", "Este juego es adictivo") == ButtonType.YES) {
             var mensaje = "Reiniciando partida"
             try {
@@ -274,9 +289,8 @@ class Principal:Initializable {
 
     @FXML
     fun onClickTable(event: MouseEvent) {
-
         println(tablaJuego.selectionModel.selectedIndex)
-        if (this.tablaJuego.selectionModel.selectedIndex != -1){
+        if (this.tablaJuego.selectionModel.selectedIndex != -1) {
             val objeto: Fila? = this.tablaJuego.selectionModel.selectedItem
             val posSeleccionada: String = java.lang.String.valueOf(this.tablaJuego.selectionModel.selectedIndex)
             val celdaSeleccionada = this.tablaJuego.selectionModel.selectedCells.firstOrNull()
@@ -285,15 +299,12 @@ class Principal:Initializable {
                 val colSeleccionada = celdaSeleccionada.column
                 posicionClick[0] = filSeleccionada
                 posicionClick[1] = colSeleccionada
-                val celda = this.tablaJuego.getVisibleLeafColumn(colSeleccionada).getCellObservableValue(filSeleccionada).value
+                val celda =
+                    this.tablaJuego.getVisibleLeafColumn(colSeleccionada).getCellObservableValue(filSeleccionada).value
                 val valorCelda = celda?.toString()
                 println("Valor de la celda seleccionada: $valorCelda")
                 println(Arrays.toString(posicionClick))
             }
-
-//    mensaje        mostrarInformacion("Información seleccionada", "Información de la fila seleccionada: $posSeleccionada", p.toString())
-        } else {
-//      mensaje      mostrarError("Error","Seleccione una fila","Compruebe que tiene datos en la tabla y que hay una fila seleccionada")
         }
     }
 
