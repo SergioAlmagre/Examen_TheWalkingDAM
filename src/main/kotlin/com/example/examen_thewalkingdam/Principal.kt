@@ -186,6 +186,7 @@ class Principal:Initializable {
     fun guardarButton(event: MouseEvent) {
         var contenido = ""
         var baseDeDatos = "ahora veré como exportar la base de datos"
+
         try {
             var seleccion = comboTipoCopia.selectionModel.selectedIndex
 
@@ -204,7 +205,6 @@ class Principal:Initializable {
                 1 ->{
                     ventanaGuardar.extensionFilters.addAll(
                     FileChooser.ExtensionFilter("SQL", "*.sql"))
-                    contenido = baseDeDatos
                 }
             }
 
@@ -222,28 +222,32 @@ class Principal:Initializable {
 
     @FXML
     fun verInfoButton(event: ActionEvent) {
-        if (Datos.tipo == 0){
-            infoPartidaField.text = "Mostrando información sobre ${Datos.zom.toString()}"
-            addInforme(infoPartidaField.text)
-        }
+        if (Datos.zom != null){
+            if (Datos.tipo == 0){
+                infoPartidaField.text = "Mostrando información sobre ${Datos.zom.toString()}"
+                addInforme(infoPartidaField.text)
+            }
 
-        var objeto:Any? = partida.mapa.getPosicion(posicionClick[0],posicionClick[1])
-        if (objeto is Zombie){
-            Datos.zom = objeto
-            Datos.tipo = 0
-        }
-        if (objeto is Personaje){
-            Datos.per = objeto
-            Datos.tipo = 1
-        }
+            var objeto:Any? = partida.mapa.getPosicion(posicionClick[0],posicionClick[1])
+            if (objeto is Zombie){
+                Datos.zom = objeto
+                Datos.tipo = 0
+            }
+            if (objeto is Personaje){
+                Datos.per = objeto
+                Datos.tipo = 1
+            }
 
-        val fxmlLoader  = FXMLLoader(HelloApplication::class.java.getResource("Detalle-view.fxml"))
-        val scene = Scene(fxmlLoader.load())
-        val stage = Stage()
-        stage.title = "Detalles"
-        stage.scene = scene
-        stage.initModality(Modality.APPLICATION_MODAL)
-        stage.showAndWait()
+            val fxmlLoader  = FXMLLoader(HelloApplication::class.java.getResource("Detalle-view.fxml"))
+            val scene = Scene(fxmlLoader.load())
+            val stage = Stage()
+            stage.title = "Detalles"
+            stage.scene = scene
+            stage.initModality(Modality.APPLICATION_MODAL)
+            stage.showAndWait()
+        }else{
+            Mensaje.informacion("No hay casilla seleccionada","Seleccione primero una casilla y vuelva a intarlo")
+        }
     }
 
 
@@ -269,7 +273,7 @@ class Principal:Initializable {
                 addInforme(infoPartidaField.text)
                 tablaJuego.items.clear()
                 partida = Juego()
-                contador = 120
+                contador = 60
                 tiempo = 1
                 progressBar.progress = contador.toDouble()
                 temporizador.start()
@@ -332,10 +336,11 @@ class Principal:Initializable {
         return ma
     }
 
-// INVESTIGANDO.....
-    fun exportarBaseDeDatos(usuario: String, contraseña: String, rutaArchivo: String) {
+// INVESTIGANDO.....CREO QUE TIENE METODOS DEPRECADOS O NO SE IMPLEMENTARLO CORRECTAMENTE
+    fun exportarBaseDeDatos(rutaArchivo: String):FileWriter {
         val url = "jdbc:mysql://${Constantes.servidor}:${Constantes.puerto}/${Constantes.bbdd}"
         val driver = "com.mysql.jdbc.Driver"
+        var writer = FileWriter("Examen_TheWalkingDam")
 
         try {
             Class.forName(driver)
@@ -346,7 +351,7 @@ class Principal:Initializable {
             val tablas = metaData.getTables(null, null, "%", null)
 
             val archivo = File(rutaArchivo)
-            val writer = FileWriter(archivo)
+            writer = FileWriter(archivo)
 
             while (tablas.next()) {
                 val nombreTabla = tablas.getString("TABLE_NAME")
@@ -374,13 +379,14 @@ class Principal:Initializable {
                 writer.write("\n")
             }
 
-            writer.close()
+//            writer.close()
             connection.close()
 
             println("La base de datos se ha exportado correctamente al archivo: $rutaArchivo")
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    return writer
     }
 
 
