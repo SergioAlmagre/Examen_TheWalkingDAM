@@ -1,5 +1,7 @@
 package com.example.examen_thewalkingdam
+import BBDD.Conexion
 import Utilidades.Datos
+import Utilidades.Mensaje
 import Zombies.ZombieNormal
 import Zombies.ZombiePodrido
 import Zombies.ZombiePupas
@@ -17,6 +19,8 @@ import java.net.URL
 import java.util.*
 
 class DetalleController:Initializable {
+
+    var hayCambios:Boolean = false
 
     @FXML
     private lateinit var capInfecField: TextField
@@ -73,14 +77,33 @@ class DetalleController:Initializable {
             println("has seleccionado un personaje")
         }
 
+        capInfecField.textProperty().addListener { _, _, _ -> cambios() }
+        tiempoInfecField.textProperty().addListener { _, _, _ -> cambios() }
+        velocidadField.textProperty().addListener { _, _, _ -> cambios() }
+
+        // Listener para el checkbox
+        checkSePuedenMover.selectedProperty().addListener { _, _, _ -> cambios() }
+
+        // Listener para los radio buttons
+        noRadio.selectedProperty().addListener { _, _, _ -> cambios() }
+        siRadio.selectedProperty().addListener { _, _, _ -> cambios() }
 
 
 
 
     }
 
+    fun cambios(){
+        hayCambios = true
+    }
+
     @FXML
     fun guardarButton(event: ActionEvent) {
+        if (hayCambios == false){
+            Mensaje.informacion("No se han realizado cambios","Pulse para continuar")
+        }else{
+            Conexion.actualizarZombie
+        }
 
 
     }
@@ -90,6 +113,11 @@ class DetalleController:Initializable {
         val source: Node = event!!.source as Node
         val stage = source.scene.window as Stage
         stage.close()
+    }
+
+
+    fun compararCambios(){
+
     }
 
 

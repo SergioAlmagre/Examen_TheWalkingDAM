@@ -192,6 +192,81 @@ object Conexion {
         return cantidad
     }
 
+    fun actualiarZombieAuto(objeto:Zombie){
+        if (objeto is ZombieNormal){
+            actualizarZombieGeneral(objeto)
+        }
+        else if(objeto is ZombiePupas){
+            actualizarZombieGeneral(objeto)
+            actualizarZombiePupas(objeto)
+        }
+        else if(objeto is ZombiePodrido){
+            actualizarZombieGeneral(objeto)
+            actualizarZombiePodrido(objeto)
+        }
+    }
+
+    fun actualizarZombiePodrido(objeto:ZombiePodrido):Int {
+        cod = 0
+        var sentenciaPodrido = "update podridos set movilidad = ? where id_zombie = ?"
+        try {
+            abrirConexion()
+
+            var pstmt = conexion!!.prepareStatement(sentenciaPodrido)
+            pstmt.setInt(1, objeto.sePuedeMover)
+            pstmt.setString(2, objeto.id)
+            pstmt.executeUpdate()
+
+            cerrarConexion()
+        } catch (e: Exception) {
+            Datos.gestionErrores(e, sentenciaPodrido)
+        }
+        return  cod
+    }
+
+    fun actualizarZombiePupas(objeto:ZombiePupas):Int {
+        cod = 0
+        var sentencia = "update pupas set completos = ? where id_zombie = ?"
+        try {
+            abrirConexion()
+
+            var pstmt = conexion!!.prepareStatement(sentencia)
+            pstmt.setInt(1,objeto.estaIntacto)
+            pstmt.setString(2,objeto.id)
+            pstmt.executeUpdate()
+
+            cerrarConexion()
+        } catch (e: Exception) {
+            Datos.gestionErrores(e, sentencia)
+        }
+        return cod
+    }
+
+    fun actualizarZombieGeneral(objeto:Zombie):Int{
+        cod = 0
+        var sentenciaZombie = "update zombies set velocidad = ?, capacidad = ?, tiempo = ? where id_zombie = ?"
+        try {
+            abrirConexion()
+
+            var pstmt = conexion!!.prepareStatement(sentenciaZombie)
+            pstmt.setInt(1,objeto.velocidad)
+            pstmt.setInt(2,objeto.capacidad)
+            pstmt.setInt(3,objeto.tiempo)
+            pstmt.setString(4,objeto.id)
+            pstmt.executeUpdate()
+
+            cerrarConexion()
+        }catch (e:Exception){
+            Datos.gestionErrores(e,sentenciaZombie)
+        }
+        return cod
+    }
+
+
+
+
+    }
+
 
 
 

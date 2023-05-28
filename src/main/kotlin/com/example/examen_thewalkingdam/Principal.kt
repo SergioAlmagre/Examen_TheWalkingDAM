@@ -123,14 +123,6 @@ class Principal:Initializable {
                                                 textoFinal[i][3])
                                 tablaJuego.items.add(fila)
                             }
-//                            for (i in 0..  partida.mapa.filas()-1){
-//                                val fila = Fila("!","!","!","!")
-//                                tablaJuego.items.add(fila)
-//                                temporizador.stop()
-//                                reiniciarIDButton.requestFocus()
-//                            }
-
-
                         }
                     }
 //  RESTAR VIDA A PERSONAJES ELEGIDOS SIN MUNICION Y SI NO LE QUEDA, CONVERTIRLO A ZOMBIE
