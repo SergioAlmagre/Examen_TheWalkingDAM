@@ -109,6 +109,10 @@ class DetalleController:Initializable {
             }else{
                 guardarCambios()
             }
+        }else{
+            val source: Node = event!!.source as Node
+            val stage = source.scene.window as Stage
+            stage.close()
         }
     }
 
@@ -142,6 +146,7 @@ class DetalleController:Initializable {
             Datos.zom = zom
             Conexion.actualiarZombieAuto(Datos.zom!!)
             Mensaje.informacion("Cambios realizados","pulse para continuar")
+            hayCambios = false
         }
     }
 
