@@ -2,6 +2,7 @@ package com.example.examen_thewalkingdam
 import BBDD.Conexion
 import Utilidades.Datos
 import Utilidades.Mensaje
+import Zombies.Zombie
 import Zombies.ZombieNormal
 import Zombies.ZombiePodrido
 import Zombies.ZombiePupas
@@ -9,10 +10,7 @@ import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.Node
-import javafx.scene.control.CheckBox
-import javafx.scene.control.RadioButton
-import javafx.scene.control.TextField
-import javafx.scene.control.ToggleGroup
+import javafx.scene.control.*
 import javafx.scene.layout.AnchorPane
 import javafx.stage.Stage
 import java.net.URL
@@ -87,37 +85,64 @@ class DetalleController:Initializable {
         // Listener para los radio buttons
         noRadio.selectedProperty().addListener { _, _, _ -> cambios() }
         siRadio.selectedProperty().addListener { _, _, _ -> cambios() }
-
-
-
-
     }
+
 
     fun cambios(){
         hayCambios = true
     }
 
+
     @FXML
     fun guardarButton(event: ActionEvent) {
-        if (hayCambios == false){
-            Mensaje.informacion("No se han realizado cambios","Pulse para continuar")
-        }else{
-            Conexion.actualizarZombie
-        }
-
-
+        guardarCambios()
     }
+
 
     @FXML
     fun volverButton(event: ActionEvent) {
-        val source: Node = event!!.source as Node
-        val stage = source.scene.window as Stage
-        stage.close()
+        if (hayCambios == true){
+            if(Mensaje.alerta("Ha habido cambios","¿Quieres salir sin sin guardar?") == ButtonType.YES){
+                val source: Node = event!!.source as Node
+                val stage = source.scene.window as Stage
+                stage.close()
+            }else{
+                guardarCambios()
+            }
+        }
     }
 
+    fun guardarCambios(){
+        var zom:Zombie? = Datos.zom
 
-    fun compararCambios(){
+        if (hayCambios == false){
+            Mensaje.informacion("No se han realizado cambios","Pulse para continuar")
+        }else{
+            if (zom is ZombieNormal){
+                zom.velocidad = velocidadField.text.toInt()
+                zom.capacidad = capInfecField.text.toInt()
+                zom.tiempo = tiempoInfecField.text.toInt()
+            }
+            else if (zom is ZombiePupas){
+                zom.velocidad = velocidadField.text.toInt()
+                zom.capacidad = capInfecField.text.toInt()
+                zom.tiempo = tiempoInfecField.text.toInt()
+            }
+            else if (zom is ZombiePodrido){
+                zom.velocidad = velocidadField.text.toInt()
+                zom.capacidad = capInfecField.text.toInt()
+                zom.tiempo = tiempoInfecField.text.toInt()
 
+                if (checkSePuedenMover.isSelected){
+                    zom.sePuedeMover = 1
+                }else{
+                    zom.sePuedeMover = 0
+                }
+            }
+            Datos.zom = zom
+            Conexion.actualiarZombieAuto(Datos.zom!!)
+            Mensaje.informacion("Cambios realizados","pulse para continuar")
+        }
     }
 
 
